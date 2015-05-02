@@ -7,31 +7,37 @@ var T = new Twit(config);
 
 var stream = T.stream('user');
 
-function callbackHandler(err, data) {
-  if (err) {
-    return console.error(new Error(err));
-  }
-  return console.log(data);
+function callbackHandler(id) {
+  T.post('direct_messages/destroy', {
+    id: id
+  }, function (err) {
+    if (err) { console.error(err); }
+  });
 }
 
 stream.on('direct_message', function (eventMsg) {
   var msg = eventMsg.direct_message.text;
   var screenName = eventMsg.direct_message.sender.screen_name;
+  var msgID = eventMsg.direct_message.id_str;
   
   if (screenName === 'talkpayBot') {
-    return;
+    return callbackHandler(msgID);
   }
 
   else if (msg.search('#talkpay') !== -1) {
-    T.post('statuses/update', {
+    return T.post('statuses/update', {
       status: msg
-    }, callbackHandler);
+    }, function () {
+      callbackHandler(msgID);
+    });
   }
 
   else {
-    T.post('direct_messages/new', {
+    return T.post('direct_messages/new', {
       screen_name: screenName,
       text: 'ruhroh, you need to include #talkpay in your DM for me to do my thang'
-    }, callbackHandler);
+    }, function () {
+      callbackHandler(msgID);
+    });
   }
 });
