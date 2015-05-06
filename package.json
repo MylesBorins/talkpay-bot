@@ -16,6 +16,7 @@
     "forever": "^0.14.1",
     "lodash.includes": "^3.1.1",
     "request": "^2.55.0",
+    "sanitizer": "^0.1.2",
     "twit": "^1.1.20"
   },
   "devDependencies": {

@@ -5,6 +5,7 @@ var basename = path.basename;
 
 var request = require('request');
 var Twit = require('twit');
+var sanitizer = require('sanitizer');
 
 var config = require('./local.json');
 var moderators = require('./moderators.json');
@@ -64,7 +65,7 @@ stream.on('direct_message', function (eventMsg) {
   else if (msg.search('#talkpay') !== -1) {
 
     return T.post('statuses/update', {
-      status: msg
+      status: sanitizer.unescapeEntities(msg)
     }, function () {
 
       return callbackHandler(msgID);
