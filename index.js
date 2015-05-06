@@ -16,6 +16,7 @@ var T = new Twit(config);
 var stream = T.stream('user');
 
 function callbackHandler(id) {
+
   T.post('direct_messages/destroy', {
     id: id
   }, function (err) {
@@ -26,6 +27,7 @@ function callbackHandler(id) {
 
 
 stream.on('direct_message', function (eventMsg) {
+
   var msg = eventMsg.direct_message.text;
   var screenName = eventMsg.direct_message.sender.screen_name;
   var msgID = eventMsg.direct_message.id_str;
@@ -36,13 +38,12 @@ stream.on('direct_message', function (eventMsg) {
   }
 
   else if (includes(moderators, screenName) && msg.search('#shitbird') !== -1) {
-
     // share a tweet via DM with #shitbird
     // msg = ['#shitbird', 'http://t.co/someshortthing']
     // we need the full url though to extract the msgID we want to delete
     try {
-
       return request(msg.split(' ')[1], function (err, response) {
+
         if (err) {
           return callbackHandler(msgID);
         }
@@ -63,7 +64,6 @@ stream.on('direct_message', function (eventMsg) {
   }
 
   else if (msg.search('#talkpay') !== -1) {
-
     return T.post('statuses/update', {
       status: sanitizer.unescapeEntities(msg)
     }, function () {
@@ -74,7 +74,6 @@ stream.on('direct_message', function (eventMsg) {
 
   else {
     return T.post('direct_messages/new', {
-
       screen_name: screenName,
       text: 'ruhroh, you need to include #talkpay in your DM for me to do my thang'
     }, function () {
