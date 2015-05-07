@@ -42,13 +42,36 @@ function returnToSender(text, screenName, msgID) {
   });
 }
 
+function moderate(msg, msgID) {
+  var badApple;
+  // this needs to be in a try catch in case the second part of the message is not a url
+  try {
+    return request(msg.split(' ')[1], function (err, response) {
+
+      if (err) {
+        return callbackHandler(msgID);
+      }
+
+      badApple = basename(response.request.uri.pathname);
+
+      return T.post('statuses/destroy/:id', {
+        id: badApple
+      }, function () {
+
+        return callbackHandler(msgID);
+      });
+    });
+  }
+  catch (e) {
+    return callbackHandler(msgID);
+  }
+}
 
 stream.on('direct_message', function (eventMsg) {
 
   var msg = eventMsg.direct_message.text;
   var screenName = eventMsg.direct_message.sender.screen_name;
   var msgID = eventMsg.direct_message.id_str;
-  var badApple;
 
   // if the message is from itself just delete it
   if (screenName === 'talkpayBot') {
@@ -60,27 +83,7 @@ stream.on('direct_message', function (eventMsg) {
   // msg = ['#shitbird', 'http://t.co/someshortthing']
   // we need the full url though to extract the msgID we want to delete
   else if (includes(moderators, screenName) && msg.search('#shitbird') !== -1) {
-    // this needs to be in a try catch in case the second part of the message is not a url
-    try {
-      return request(msg.split(' ')[1], function (err, response) {
-
-        if (err) {
-          return callbackHandler(msgID);
-        }
-
-        badApple = basename(response.request.uri.pathname);
-
-        return T.post('statuses/destroy/:id', {
-          id: badApple
-        }, function () {
-
-          return callbackHandler(msgID);
-        });
-      });
-    }
-    catch (e) {
-      return callbackHandler(msgID);
-    }
+    return moderate(msg, msgID);
   }
 
   else if (linkCheck(msg)) {
