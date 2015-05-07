@@ -67,6 +67,16 @@ function moderate(msg, msgID) {
   }
 }
 
+function post(msg, msgID) {
+  return T.post('statuses/update', {
+    // sanitizer removes HTML Special Characters
+    status: sanitizer.unescapeEntities(msg)
+  }, function () {
+
+    return callbackHandler(msgID);
+  });
+}
+
 stream.on('direct_message', function (eventMsg) {
 
   var msg = eventMsg.direct_message.text;
@@ -92,13 +102,7 @@ stream.on('direct_message', function (eventMsg) {
 
   // if the message includes #talkpay tweet it
   else if (msg.search('#talkpay') !== -1) {
-    return T.post('statuses/update', {
-      // sanitizer removes HTML Special Characters
-      status: sanitizer.unescapeEntities(msg)
-    }, function () {
-
-      return callbackHandler(msgID);
-    });
+    return post(msg, msgID);
   }
 
   // if all else fails warn the messanger of what they need to do
