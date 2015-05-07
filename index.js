@@ -11,6 +11,7 @@ var sanitizer = require('sanitizer');
 var includes = require('lodash.includes');
 
 // local data / modules
+var linkCheck = require('./lib/link-check');
 var config = require('./local.json');
 var moderators = require('./moderators.json');
 
@@ -27,6 +28,17 @@ function callbackHandler(id) {
   }, function (err) {
 
     if (err) { return console.error(err); }
+  });
+}
+
+// If we are not posting, let the user know and delete the message
+function returnToSender(text, screenName, msgID) {
+  return T.post('direct_messages/new', {
+    screen_name: screenName,
+    text: text
+  }, function () {
+
+    return callbackHandler(msgID);
   });
 }
 
@@ -71,6 +83,10 @@ stream.on('direct_message', function (eventMsg) {
     }
   }
 
+  else if (linkCheck(msg)) {
+    return returnToSender('Sorry, I will not send out messages that include links.', screenName, msgID);
+  }
+
   // if the message includes #talkpay tweet it
   else if (msg.search('#talkpay') !== -1) {
     return T.post('statuses/update', {
@@ -84,12 +100,6 @@ stream.on('direct_message', function (eventMsg) {
 
   // if all else fails warn the messanger of what they need to do
   else {
-    return T.post('direct_messages/new', {
-      screen_name: screenName,
-      text: 'ruhroh, you need to include #talkpay in your DM for me to do my thang'
-    }, function () {
-
-      return callbackHandler(msgID);
-    });
+    return returnToSender('ruhroh, you need to include #talkpay in your DM for me to do my thang', screenName, msgID);
   }
 });
