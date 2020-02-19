@@ -6,8 +6,7 @@
   "scripts": {
     "test": "npm run lint",
     "lint": "eslint index.js lib/",
-    "start": "forever start -l forever.log -o out.log -r err.log --uid talkpay index.js",
-    "stop": "forever stop talkpay"
+    "start": "node index.js"
   },
   "author": "Myles Borins",
   "license": "MIT",
