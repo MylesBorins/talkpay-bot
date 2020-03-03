@@ -5,8 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "npm run lint",
-    "lint": "eslint index.js lib/",
-    "start": "node index.js"
+    "lint": "eslint server.js lib/",
+    "start": "node server.js"
   },
   "author": "Myles Borins",
   "license": "MIT",
@@ -14,9 +14,7 @@
   "dependencies": {
     "bl": "^4.0.0",
     "node-fetch": "^2.6.0",
-    "oauth-1.0a": "^2.2.6",
-    "sanitizer": "^0.1.2",
-    "twit": "^1.1.20"
+    "oauth-1.0a": "^2.2.6"
   },
   "devDependencies": {
     "eslint": "^6.8.0"
