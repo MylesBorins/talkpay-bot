@@ -1,6 +1,10 @@
 {
-  "consumer_key": "",
-  "consumer_secret": "",
-  "access_token": "",
-  "access_token_secret": ""
+  "moderator_id": "ID ",
+  "bot_id": "3182135887",
+  "consumer_key": "consumer key from twitter api",
+  "consumer_secret": "consumer secret from twitter api",
+  "access_token": "access token from twitter api",
+  "access_token_secret": "access token secret from twitter api",
+  "env": "environment in developer.twitter.com to account activity api",
+  "webhook_url": "the url to be called by twitter.com"
 }
