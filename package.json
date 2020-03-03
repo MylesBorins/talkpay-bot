@@ -12,13 +12,13 @@
   "license": "MIT",
   "repository": "https://github.com/TheAlphaNerd/talkpay-bot",
   "dependencies": {
-    "forever": "^0.14.1",
-    "lodash.includes": "^3.1.1",
-    "request": "^2.55.0",
+    "bl": "^4.0.0",
+    "node-fetch": "^2.6.0",
+    "oauth-1.0a": "^2.2.6",
     "sanitizer": "^0.1.2",
     "twit": "^1.1.20"
   },
   "devDependencies": {
-    "eslint": "^0.20.0"
+    "eslint": "^6.8.0"
   }
 }

@@ -1,4 +1,6 @@
-FROM node:alpine-12
-copy . .
-RUN npm install --production
-CMD npm start
+FROM node:12-slim
+WORKDIR /usr/src/app
+COPY package*.json ./
+RUN npm ci --production
+COPY . ./
+CMD ["node", "server.js"]

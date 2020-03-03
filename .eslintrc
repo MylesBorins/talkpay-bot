@@ -1,9 +1,13 @@
 {
   "env": {
-    "node": true
+    "node": true,
+    "es6": true
   },
   "rules": {
     "quotes": [2, "single"],
     "camelcase": 0
+  },
+  "parserOptions": {
+    "ecmaVersion": 2018
   }
 }

@@ -1,2 +1,11 @@
 .git
+.eslintrc
+.gitignore
+Dockerfile
+local.json
+local.json-dist
+npm-debug.log
 node_modules
+README.md
+test/
+deploy.sh
