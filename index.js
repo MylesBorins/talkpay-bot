@@ -2,7 +2,6 @@
 
 // npm modules
 var Twit = require('twit');
-var includes = require('lodash.includes');
 
 // local modules
 var linkCheck = require('./lib/link-check');
@@ -34,7 +33,7 @@ stream.on('direct_message', function (eventMsg) {
   // share a tweet via DM with #shitbird
   // msg = ['#shitbird', 'http://t.co/someshortthing']
   // we need the full url though to extract the msgID we want to delete
-  else if (includes(moderators, screenName) && msg.search('#shitbird') !== -1) {
+  else if (moderators.includes(screenName) && msg.search('#shitbird') !== -1) {
     return moderate(T, msg, msgID);
   }
 
