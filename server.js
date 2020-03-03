@@ -7,12 +7,8 @@ const http = require('http');
 const url = require('url');
 
 const BufferList = require('bl');
-const Twit = require('twit');
 
-const cleanup = require('./lib/cleanup');
-const moderate = require('./lib/moderate');
-const post = require('./lib/post');
-const returnToSender = require('./lib/return-to-sender');
+const { dm, tweet } = require('./lib');
 
 const port = process.env.PORT || 8000;
 
@@ -24,8 +20,6 @@ const auth = {
 };
 
 const moderator = process.env.USER_ID;
-
-let T;
 
 function validateWebhook(token, res) {
   console.log('Validating Webhook');
@@ -39,46 +33,56 @@ function validateWebhook(token, res) {
   }));
 }
 
-async function handleDM(dm) {
-  if (!T) T = new Twit(auth);
+async function handleDM(m) {
+  if (m.type !== 'message_create') return;
   console.log('direct message received');
-  if (dm.type !== 'message_create') return;
-  const msg = dm.message_create.message_data.text;
-  const senderId = dm.message_create.sender_id;
-  const receiverId = dm.message_create.target.recipient_id;
-  const msgID = dm.id;
-  const urls = dm.message_create.message_data.entities.urls;
+  const msg = m.message_create.message_data.text;
+  const senderId = m.message_create.sender_id;
+  const receiverId = m.message_create.target.recipient_id;
+  const msgID = m.id;
+  const urls = m.message_create.message_data.entities.urls;
 
-  // if the message is from itself just delete it
+  await dm.destory(auth, msgID);
+  console.log('direct message destroyed')
+
+  let responseID;
+
+  // if the message is from itself do nothing
   if (senderId === receiverId) {
-    return cleanup(T, msgID);
+    return;
   }
 
   // if the message is from a moderator and includes #shitbird delete the referenced tweet
   // share a tweet via DM with #shitbird
   // msg = ['#shitbird', 'http://t.co/someshortthing']
   // we need the full url though to extract the msgID we want to delete
-  else if (senderId === moderator && msg.search('#shitbird') !== -1) {
-    return moderate(T, msg, msgID);
+  else if (senderId === moderator && msg.startsWith('#shitbird')) {
+    const id = msg.slice(10);
+    await tweet.destory(auth, id);
+    const responseID = await dm.send(auth, senderId, 'Moderated.');
+
   }
 
   // No sharing links
-  else if (url.length) {
-    return await returnToSender(T, 'Sorry, I will not send out messages that include links.', senderId, msgID);
+  else if (urls.length) {
+    const responseID = await dm.send(auth, senderId, 'Sorry, I will not send out messages that include links.', senderId, msgID);
   }
 
   // if the message includes #talkpay tweet it
-  else if (msg.search('#talkpay') !== -1) {
-    return post(T, msg, msgID);
+  else if (msg.search('#talkpay').includes('#talkpay')) {
+    const tweetID = await tweet.update(auth, msg);
+    const responseID = await dm.send(auth, senderId, 'I\'ve. shared your salary information and deleted all messages. Thanks for sharing 🎉');
   }
 
   // if all else fails warn the messanger of what they need to do
   else {
-    return await returnToSender(T, 'You need to include #talkpay in your DM for me to do my thing', senderId, msgID);
+    const responseID = await dm.send(auth, senderId, 'You need to include #talkpay in your DM for me to do my thing');
   }
+  
+  if (responseID) await dm.destory(auth, responseID);
 }
 
-async function handleWebhook(req, res) {
+async function handleWebhook(req) {
   const dataBuffer = new BufferList();
   req.on('data', chunk => {
     dataBuffer.append(chunk);
@@ -89,8 +93,6 @@ async function handleWebhook(req, res) {
     if (dms) {
       await Promise.all(dms.map(handleDM));
     }
-    res.writeHead(200);
-    res.end();
   });
 }
 
@@ -104,8 +106,17 @@ const server = http.createServer((req, res) => {
   }
 
   if (req.method === 'POST' && req.headers['content-type'] === 'application/json') {
-    handleWebhook(req, res);
-    return;
+    try {
+      await handleWebhook(req);
+      res.writeHead(200)
+    }
+    catch (e) {
+      console.error(e);
+      res.writeHead(500);
+    }
+    finally {
+      res.end();
+    }
   }
   if (req.url !== '/') {
     res.writeHead(404);

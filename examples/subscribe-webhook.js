@@ -10,14 +10,14 @@ const {
   webhook_url
 } = require('../local.json');
 
-const { getBearerToken } = require('../lib/twitter/bearer');
+const { getBearerToken } = require('../lib/auth/bearer');
 
 const {
   registerWebhook,
   getWebhooks,
   deleteWebhook,
   subscribe
-} = require('../lib/twitter/webhooks');
+} = require('../lib/webhooks');
 
 const auth = {
   access_token,

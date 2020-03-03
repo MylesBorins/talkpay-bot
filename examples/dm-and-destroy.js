@@ -1,6 +1,6 @@
 const config = require('../local.json');
 
-const { send, destroy } = require('../lib/twitter/dm');
+const { send, destroy } = require('../lib/dm');
 
 const auth = {
   access_token,

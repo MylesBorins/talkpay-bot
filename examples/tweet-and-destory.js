@@ -1,4 +1,4 @@
-const { update, destroy } = require('../lib/twitter/tweet');
+const { update, destroy } = require('../lib/tweet');
 
 const config = require('../local.json');
 
