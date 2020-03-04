@@ -1,6 +1,3 @@
-const fetch = require('node-fetch');
-const Headers = fetch.Headers;
-
 const {
   access_token,
   access_token_secret,
@@ -9,8 +6,6 @@ const {
   env,
   webhook_url
 } = require('../local.json');
-
-const { getBearerToken } = require('../lib/auth/bearer');
 
 const {
   registerWebhook,
@@ -26,17 +21,16 @@ const auth = {
   consumer_secret
 };
 
-async function cleanOldWebhook() {
-  const bearer = await getBearerToken(auth);
+async function cleanOldWebhook(auth, env) {
   console.log('Getting existing webhook');
-  const webhooks = await getWebhooks(bearer, env);
+  const webhooks = await getWebhooks(auth, env);
   if (!webhooks instanceof Array) throw webhooks;
   const webhook = webhooks[0];
   if (webhook) {
     console.log(`webhook found`);
     console.log(webhook.url)
     console.log('Deleting webhook');
-    const success = await deleteWebhook(bearer, env, webhook.id);
+    const success = await deleteWebhook(auth, env, webhook.id);
     if (!success) throw new Error('webhook deletion failed');
     console.log('Successfully deleted webhook');
   }
@@ -45,7 +39,7 @@ async function cleanOldWebhook() {
   }
 }
 
-async function registerNewWebhook() {
+async function registerNewWebhook(auth, env, webhook_url) {
   console.log('Registering new webhook');
   const newWebhook = await registerWebhook(auth, env, webhook_url);
   if (!newWebhook) throw new Error(`webhook creation failed`);
@@ -53,18 +47,18 @@ async function registerNewWebhook() {
   console.log(newWebhook.url)
 }
 
-async function createSubscription() {
+async function createSubscription(auth, env) {
   console.log('Subscribing to events');
   const subscription = await subscribe(auth, env);
   console.log('Subscribed!');
 }
 
-async function main(auth) {
-  await cleanOldWebhook();
-  await registerNewWebhook();
-  await createSubscription();
+async function main(auth, env, webhook_url) {
+  await cleanOldWebhook(auth, env);
+  await registerNewWebhook(auth, env, webhook_url);
+  await createSubscription(auth, env);
 }
 
-main().then(_ => {
+main(auth, env, webhook_url).then(_ => {
   console.log('All Done');
 }).catch(e => console.error(e));
