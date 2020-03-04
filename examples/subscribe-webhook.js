@@ -27,10 +27,7 @@ const auth = {
 };
 
 async function cleanOldWebhook() {
-  const bearer = await getBearerToken({
-    user: consumer_key,
-    pass: consumer_secret
-  });
+  const bearer = await getBearerToken(auth);
   console.log('Getting existing webhook');
   const webhooks = await getWebhooks(bearer, env);
   if (!webhooks instanceof Array) throw webhooks;
