@@ -10,7 +10,7 @@
   },
   "author": "Myles Borins",
   "license": "MIT",
-  "repository": "https://github.com/TheAlphaNerd/talkpay-bot",
+  "repository": "https://github.com/MylesBorins/talkpay-bot",
   "dependencies": {
     "bl": "^4.0.0",
     "node-fetch": "^2.6.0",
