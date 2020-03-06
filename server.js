@@ -148,10 +148,16 @@ const server = http.createServer(async (req, res) => {
   res.end();
 });
 
-server.listen(port, (err) => {
-  if (err) {
-    console.error(err);
-    process.exit(1);
-  }
-  console.log(`Lisenting on port ${port}`);
-});
+if (require.main === module) {
+  server.listen(port, (err) => {
+    if (err) {
+      console.error(err);
+      process.exit(1);
+    }
+    console.log(`Lisenting on port ${port}`);
+  });
+}
+
+module.exports = {
+  server
+};

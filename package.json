@@ -2,10 +2,11 @@
   "name": "talkpay-bot",
   "version": "2.0.2",
   "description": "DM me and I'll tweet your #talkpay",
-  "main": "index.js",
+  "main": "server.js",
   "scripts": {
-    "test": "npm run lint",
-    "lint": "eslint server.js lib/",
+    "test": "npm run lint && npm run tap",
+    "tap": "tap test/test-*.js",
+    "lint": "eslint server.js lib/ test/",
     "start": "node server.js"
   },
   "author": "Myles Borins",
@@ -17,6 +18,7 @@
     "oauth-1.0a": "^2.2.6"
   },
   "devDependencies": {
-    "eslint": "^6.8.0"
+    "eslint": "^6.8.0",
+    "tap": "^14.10.6"
   }
 }

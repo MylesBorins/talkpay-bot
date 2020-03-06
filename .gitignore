@@ -4,4 +4,3 @@ local.json
 deploy.sh
 .nyc_output/
 .env
-
