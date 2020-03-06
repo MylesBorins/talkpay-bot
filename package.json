@@ -5,8 +5,8 @@
   "main": "server.js",
   "scripts": {
     "test": "npm run lint && npm run tap",
-    "tap": "tap test/test-*.js",
-    "lint": "eslint server.js lib/ test/",
+    "tap": "tap --no-coverage test/test-*.js",
+    "lint": "eslint server.js lib/ test/ routes/",
     "start": "node server.js"
   },
   "author": "Myles Borins",
