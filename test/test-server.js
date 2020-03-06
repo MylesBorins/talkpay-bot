@@ -33,6 +33,8 @@ test('generic request to /webook', async (t) => {
   t.equal(txt, '404\'d', 'should get expected response');
 });
 
+// Need to figure out how to set process values in test.
+// maybe in beforeEach?
 // test('crc_token request to /webook', async (t) => {
 //   const res = await fetch('http://localhost:8080/webhook?crc_token=12345', {
 //     method: 'POST'
@@ -43,3 +45,15 @@ test('generic request to /webook', async (t) => {
 //   const { response_token } = await res.json();
 //   t.equal(txt, '404\'d', 'should get expected response');
 // });
+
+test('ignored POST to /webhook', async t => {
+    const res = await fetch('http://localhost:8080/webhook', {
+      method: 'POST',
+      headers: {
+        'content-type': 'application/json'
+      },
+      body: '{}'
+    });
+    t.ok(res.ok, 'the response should be good!');
+    t.equals(res.status, 200, 'status should be 200');
+});
