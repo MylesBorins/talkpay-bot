@@ -2,13 +2,14 @@
 // https://github.com/twitterdev/autohook
 // MIT
 'use strict';
-const crypto = require('crypto');
 const http = require('http');
 const url = require('url');
 
 const BufferList = require('bl');
 
 const { dm, tweet } = require('./lib');
+
+const validateWebhook = require('./routes/validate-webhook');
 
 const port = process.env.PORT || 8000;
 
@@ -21,18 +22,6 @@ const auth = {
 
 const moderatorID = process.env.MODERATOR_ID;
 const botID = process.env.BOT_ID;
-
-function validateWebhook(token, res) {
-  console.log('Validating Webhook');
-  const responseToken = crypto
-    .createHmac('sha256', auth.consumer_secret)
-    .update(token)
-    .digest('base64');
-  res.writeHead(200, {'content-type': 'application/json'});
-  res.end(JSON.stringify({
-    response_token: `sha256=${responseToken}`
-  }));
-}
 
 async function handleDM(m) {
   if (m.type !== 'message_create') return;
@@ -119,7 +108,7 @@ const server = http.createServer(async (req, res) => {
   const route = url.parse(req.url, true);
   if (route.query.crc_token) {
     try {
-      validateWebhook(route.query.crc_token, res);
+      validateWebhook(auth, route.query.crc_token, res);
     }
     catch (e) {
       console.error(e);

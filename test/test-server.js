@@ -32,8 +32,8 @@ test('generic request to /webook', async (t) => {
   const txt = await res.text();
   t.equal(txt, '404\'d', 'should get expected response');
 });
-//
-// tap.test('crc_token request to /webook', (t) => {
+
+// test('crc_token request to /webook', async (t) => {
 //   const res = await fetch('http://localhost:8080/webhook?crc_token=12345', {
 //     method: 'POST'
 //   });
