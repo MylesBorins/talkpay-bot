@@ -1,6 +1,6 @@
 {
   "name": "talkpay-bot",
-  "version": "2.0.2",
+  "version": "2.0.3",
   "description": "DM me and I'll tweet your #talkpay",
   "main": "server.js",
   "scripts": {
