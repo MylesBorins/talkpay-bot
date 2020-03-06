@@ -118,7 +118,15 @@ const server = http.createServer(async (req, res) => {
 
   const route = url.parse(req.url, true);
   if (route.query.crc_token) {
-    validateWebhook(route.query.crc_token, res);
+    try {
+      validateWebhook(route.query.crc_token, res);
+    }
+    catch (e) {
+      console.error(e);
+      res.writeHead(500);
+      res.write('500: Something went seriously wrong.')
+      res.end();
+    }
     return;
   }
 
