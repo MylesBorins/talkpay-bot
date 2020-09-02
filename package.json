@@ -13,7 +13,7 @@
   "license": "MIT",
   "repository": "https://github.com/MylesBorins/talkpay-bot",
   "dependencies": {
-    "bl": "^4.0.0",
+    "bl": "^4.0.3",
     "node-fetch": "^2.6.0",
     "oauth-1.0a": "^2.2.6"
   },
