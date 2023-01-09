@@ -18,7 +18,7 @@ afterEach((done) => {
 test('request to /', async (t) => {
   const res = await fetch('http://localhost:8080/');
   t.ok(res.ok, 'the response should be good!');
-  t.equals(res.status, 200, 'status should be 200');
+  t.equal(res.status, 200, 'status should be 200');
 
   const txt = await res.text();
   t.equal(txt, 'Oh hi', 'should get expected response');
@@ -27,7 +27,7 @@ test('request to /', async (t) => {
 test('generic request to /webook', async (t) => {
   const res = await fetch('http://localhost:8080/webhook');
   t.notOk(res.ok, 'the response should not be good!');
-  t.equals(res.status, 404, 'status should be 404');
+  t.equal(res.status, 404, 'status should be 404');
 
   const txt = await res.text();
   t.equal(txt, '404\'d', 'should get expected response');
@@ -40,7 +40,7 @@ test('generic request to /webook', async (t) => {
 //     method: 'POST'
 //   });
 //   t.ok(res.ok, 'the response should be good!');
-//   t.equals(res.status, 200, 'status should be 404');
+//   t.equal(res.status, 200, 'status should be 404');
 //
 //   const { response_token } = await res.json();
 //   t.equal(txt, '404\'d', 'should get expected response');
@@ -55,5 +55,5 @@ test('ignored POST to /webhook', async t => {
       body: '{}'
     });
     t.ok(res.ok, 'the response should be good!');
-    t.equals(res.status, 200, 'status should be 200');
+    t.equal(res.status, 200, 'status should be 200');
 });
